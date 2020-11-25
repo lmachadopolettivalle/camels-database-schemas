@@ -114,9 +114,19 @@ create_table(
     {
         "halo_id" : "INTEGER",
         "redshift" : "REAL NOT NULL",
-        "M500c" : "REAL"
+        "property_id" : "INTEGER NOT NULL",
+        "property_value" : "REAL"
     },
-    primary_key = ("halo_id", "redshift")
+    primary_key = ("halo_id", "redshift", "property_id")
+)
+
+create_table(
+    "halos_meta",
+    {
+        "property_id" : "INTEGER PRIMARY KEY",
+        "property_description" : "TEXT NOT NULL",
+        "units" : "TEXT NOT NULL"
+    }
 )
 
 create_table(
@@ -145,12 +155,24 @@ create_table(
 populate_table(
     "halos",
     [
-        "halo_id", "redshift", "M500c"
+        "halo_id", "redshift", "property_id", "property_value"
     ],
     [
-        (1234, 0.0, 1e14),
-        (5678, 0.0, 2e13),
-        (129304937, 0.0, 1e12)
+        (1234, 0.0, 1, 1e14),
+        (1234, 0.0, 2, 1e15),
+        (5678, 0.0, 1, 2e13),
+        (129304937, 0.0, 1, 1e12),
+    ]
+)
+
+populate_table(
+    "halos_meta",
+    [
+        "property_id", "property_description", "units"
+    ],
+    [
+        (1, "M500c", "Msun"),
+        (2, "M200c", "Msun"),
     ]
 )
 
@@ -190,11 +212,16 @@ populate_table(
 
 # Step 3: select data from tables
 ## Determine halo_ids based on mass cut
-halo_ids_query = """
-SELECT halo_id
-FROM halos
-WHERE M500c > 2e12
-AND redshift = 0.0
+halo_cut_property = "M500c"
+
+halo_ids_query = f"""
+SELECT h.halo_id, h.property_id, h.redshift, h.property_value, hm.property_description
+FROM halos h
+INNER JOIN halos_meta hm
+ON h.property_id = hm.property_id
+WHERE hm.property_description = '{halo_cut_property}'
+AND h.property_value > 2e12
+AND h.redshift = 0.0
 """
 
 halo_ids = execute_query(halo_ids_query)
