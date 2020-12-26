@@ -1,1 +1,3 @@
 *.db
+*.npz
+__pycache__
