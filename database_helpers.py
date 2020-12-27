@@ -39,11 +39,14 @@ def get_db_conn():
     conn.row_factory = sqlite3.Row
     return conn
 
-def execute_query(query: str):
+def execute_query(query: str, params: tuple = None):
     conn = get_db_conn()
     cursor = conn.cursor()
 
-    cursor.execute(query)
+    if params is not None:
+        cursor.execute(query, params)
+    else:
+        cursor.execute(query)
 
     results = cursor.fetchall()
 

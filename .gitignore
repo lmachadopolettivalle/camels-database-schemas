@@ -1,3 +1,4 @@
 *.db
 *.npz
 __pycache__
+venv
