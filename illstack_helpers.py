@@ -5,10 +5,11 @@ NPZ_FILENAME = "sample_illstack.npz"
 # List of properties
 global_properties_list = ['M_Crit200', 'R_Crit200', 'GroupFirstSub', 'sfr', 'mstar', 'GroupBHMass', 'GroupBHMdot', 'Group_GasH', 'Group_GasHe', 'Group_GasC', 'Group_GasN', 'Group_GasO', 'Group_GasNe', 'Group_GasMg', 'Group_GasSi', 'Group_GasFe', 'GroupGasMetallicity', 'GroupLen', 'GroupMass', 'GroupNsubs', 'Group_StarH', 'Group_StarHe', 'Group_StarC', 'Group_StarN', 'Group_StarO', 'Group_StarNe', 'Group_StarMg', 'Group_StarSi', 'Group_StarFe', 'GroupStarMetallicity', 'GroupVelx', 'GroupVely', 'GroupVelz', 'GroupWindMass', 'M_Crit500', 'M_Mean200', 'M_TopHat200', 'R_Crit500', 'R_Mean200', 'R_TopHat200']
 
-profile_properties_list = ["val", "n"]
+profile_properties_key = "val"
+profile_properties_list = ["gas_density", "gas_pressure"] # data["val"] is a 3D array (profile_type,value, radial bin). This is the list of profile types
 
 def get_illstack_global_properties():
-    with np.load(NPZ_FILENAME) as f:
+    with np.load(NPZ_FILENAME, allow_pickle=True) as f:
         data = dict(f)
 
     global_properties_dict = {
@@ -21,15 +22,16 @@ def get_illstack_global_properties():
 
 
 def get_illstack_profile_properties():
-    with np.load(NPZ_FILENAME) as f:
+    with np.load(NPZ_FILENAME, allow_pickle=True) as f:
         data = dict(f)
 
-    radial_bins = data["r"] # List of length 25 (25 == data["nbis"])
+    radial_bins = data["r"] # List of length 25 (25 == data["nbins"])
 
     profile_properties_dict = {
-        k : v
-        for k, v in data.items()
-        if k in profile_properties_list
+        profile_type : data[profile_properties_key][i,:]
+        for i, profile_type in enumerate(profile_properties_list)
     }
+
+    print(profile_properties_dict)
 
     return radial_bins, profile_properties_dict

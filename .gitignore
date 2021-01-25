@@ -1,4 +1,5 @@
 *.db
 *.npz
+*.pdf
 __pycache__
 venv
