@@ -19,7 +19,8 @@ python populate_profile_data.py
 
 To fetch profile information and plot data:
 ```
-python sample_plot_profiles.py
+python sample_density_profiles.py
+python sample_pressure_profiles.py
 ```
 
 ## Features
