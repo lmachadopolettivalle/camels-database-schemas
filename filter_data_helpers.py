@@ -13,8 +13,7 @@ def get_all_simulation_details():
     """
 
     data = execute_query(query)
-    print(data)
-    return data
+    return pd.DataFrame(data)
 
 
 def get_halos_based_on_filters(list_of_inequality_filters, list_of_equality_filters):
@@ -41,10 +40,8 @@ def get_halos_based_on_filters(list_of_inequality_filters, list_of_equality_filt
     if len(query_where_clauses) != 0:
         query += " WHERE " + " AND ".join(query_where_clauses)
 
-    print(query)
     data = execute_query(query)
-    print(len(data))
-    return data
+    return pd.DataFrame(data)
 
 
 
@@ -70,12 +67,8 @@ def get_profiles(list_of_halo_ids, list_of_simulation_ids, list_of_properties):
     if len(query_where_clauses) != 0:
         query += " WHERE " + " AND ".join(query_where_clauses)
 
-    print(query)
     data = execute_query(query)
-    print(len(data))
-    print(data)
-    print(pd.DataFrame(data))
-    return data
+    return pd.DataFrame(data)
 
 
 if __name__ == "__main__":
