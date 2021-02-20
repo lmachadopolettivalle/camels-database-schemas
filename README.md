@@ -11,7 +11,7 @@ Motivated by previous work from https://github.com/ethlau/caps/tree/main
 - Mergers and Mergertree: Viraj Pandya with Rockstar
 
 ### Data Sizes and Memory Requirements
-TBD.
+TBD
 
 ### Tables and Schemas
 - halos
