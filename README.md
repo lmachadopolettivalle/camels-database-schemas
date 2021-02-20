@@ -4,14 +4,33 @@ Prototype for SQL database to store CAMELS-CGM working group data.
 
 Motivated by previous work from https://github.com/ethlau/caps/tree/main
 
-## Setup
+## Settings
+
+### Data Sources
+- Halos and Profiles: Emily Moser with Illstack (https://github.com/emilymmoser/illstack_CAMELS)
+- Mergers and Mergertree: Viraj Pandya with Rockstar
+
+### Data Sizes and Memory Requirements
+TBD
+
+### Tables and Schemas
+- halos
+- profiles
+- simulations
+
+### Helpful SQL browser extension
+The following browser extension helps debug the `sqlite` database file: https://add0n.com/sqlite-manager.html
+
+## Usage
+
+### Setup
 ```
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-## Scripts
+### Scripts
 To create a new empty database file:
 ```
 python create_empty_database.py -f "sample.db" --profile_filename "sample_illstack.npz"
@@ -27,13 +46,4 @@ To fetch profile information and plot data:
 python sample_density_profiles.py
 python sample_pressure_profiles.py
 ```
-
-## Features
-
-- Create tables using `sqlite` to store profile and halo information
-- Select and plot profile data
-
-## Helpful SQL browser extension
-
-The following browser extension helps debug the `sqlite` database file: https://add0n.com/sqlite-manager.html
 
