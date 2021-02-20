@@ -1,12 +1,29 @@
-from database_helpers import create_table, populate_table
+import argparse
+
+from database_helpers import set_database_filename, create_table, populate_table
 from illstack_helpers import get_illstack_global_properties, get_illstack_profile_properties
 
-SIMULATION_ID = "IllustrisTNG_1P_22_z0.0"
-SIMULATION_DESCRIPTION = "IllustrisTNG, 1P_22"
-SIMULATION_REDSHIFT = 0.0
+# Accept optional name of database file
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", "--database_filename", help="Database filename to be generated", default="sample.db", type=str)
+parser.add_argument("--profile_filename", help="Profiles .npz file, used to determine columns for the profiles table", default="sample_illstack.npz", type=str)
+parser.add_argument("--simulation_id", help="Unique ID for the simulation used in this datafile", default="IllustrisTNG_1P_22_z0.0", type=str)
+parser.add_argument("--simulation_description", help="Helpful description of this simulation and its defining features", default="", type=str)
+parser.add_argument("--simulation_redshift", help="Redshift for this simulation run", default=0, type=float)
 
-radial_bins, illstack_profile_properties = get_illstack_profile_properties()
-illstack_global_properties = get_illstack_global_properties()
+args = parser.parse_args()
+db_filename = args.database_filename
+profile_filename = args.profile_filename
+SIMULATION_ID = args.simulation_id
+SIMULATION_DESCRIPTION = args.simulation_description
+SIMULATION_REDSHIFT = args.simulation_redshift
+
+# Set database filename
+set_database_filename(db_filename)
+
+# Get profile and halo data
+radial_bins, illstack_profile_properties = get_illstack_profile_properties(profile_filename)
+illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 # Populate tables with computed data
 ### simulations
@@ -46,15 +63,8 @@ for i in range(number_halos):
 
     halos_data.append(tuple(halos_entry))
 
-print("YOOO")
-print(len(list(illstack_global_properties.keys())))
-print(len(halos_data[0]))
-print(list(illstack_global_properties.keys()))
-print(halos_data[0])
-
 populate_table(
     "halos",
-    #list(illstack_global_properties.keys()),
     halos_columns_list,
     halos_data
 )
