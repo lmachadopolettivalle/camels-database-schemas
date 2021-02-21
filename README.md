@@ -41,9 +41,12 @@ To populate the SQL database:
 python populate_profile_data.py -f "sample.db" --profile_filename "sample_illstack.npz" --simulation_id "sample simulation ID" --simulation_description "sample simulation description" --simulation_redshift 0.0
 ```
 
-To fetch profile information and plot data:
+Useful SQL query/filtering functions:
 ```
-python sample_density_profiles.py
-python sample_pressure_profiles.py
+python filter_data_helpers.py
 ```
 
+Sample end to end script to query database and plot resulting radial profiles:
+```
+python sample_end_to_end.py
+```
