@@ -75,10 +75,10 @@ if __name__ == "__main__":
     get_all_simulation_details()
     get_halos_based_on_filters(
         list_of_inequality_filters=[("M_Crit200", 30, 200)],
-        list_of_equality_filters=[("simulation_id", ["testsimu", "banana"])],
+        list_of_equality_filters=[("simulation_id", ["sample ID 1", "sample ID 2"])],
     )
     get_profiles(
         list_of_halo_ids=["halo_0", "nonexistent halo ID"],
-        list_of_simulation_ids=["simulation ID 1", "testsimu"],
+        list_of_simulation_ids=["simulation ID 1", "sample ID 2"],
         list_of_properties=["gas_density"]
     )
