@@ -6,9 +6,15 @@ import os
 import sqlite3
 
 DATABASE_FILE = "sample.db"
-# For demo purposes, remove previous version of database
-if os.path.isfile(DATABASE_FILE):
-    os.remove("sample.db")
+
+def set_database_filename(filename):
+    global DATABASE_FILE
+    DATABASE_FILE = filename
+
+def remove_existing_db_files():
+    # For demo purposes, remove previous version of database
+    if os.path.isfile(DATABASE_FILE):
+        os.remove(DATABASE_FILE)
 
 
 ####################
