@@ -30,10 +30,10 @@ illstack_global_properties = get_illstack_global_properties(profile_filename)
 populate_table(
     "simulations",
     [
-        "simulation_unique_id", "simulation_description", "redshift"
+        "simulation_unique_id", "simulation_description", "redshift", "feedback_efficiency", "omega_m", "omega_b", "box_size", "resolution"
     ],
     [
-        (SIMULATION_ID, SIMULATION_DESCRIPTION, SIMULATION_REDSHIFT)
+        (SIMULATION_ID, SIMULATION_DESCRIPTION, SIMULATION_REDSHIFT, 0.3, 0.3, 0.05, 100, 1)
     ]
 )
 
