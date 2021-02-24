@@ -4,12 +4,12 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [created]
+  pull_request:
+    types: [closed]
 
 jobs:
   deploy:
-
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -23,9 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install setuptools twine
     - name: Build and publish
-      env:
-        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         python setup.py sdist
-        twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+        twine upload --repository-url https://test.pypi.org/legacy/ dist/* -u ${{ secrets.PYPI_USERNAME }} -p ${{ secrets.PYPI_PASSWORD }}
