@@ -25,6 +25,11 @@ create_table(
         "simulation_unique_id" : "TEXT PRIMARY KEY",
         "simulation_description" : "TEXT NOT NULL",
         "redshift" : "REAL NOT NULL",
+        "feedback_efficiency" : "REAL NOT NULL",
+        "omega_m" : "REAL NOT NULL",
+        "omega_b" : "REAL NOT NULL",
+        "box_size" : "REAL NOT NULL",
+        "resolution" : "REAL NOT NULL",
     },
 )
 
