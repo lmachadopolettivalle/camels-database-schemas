@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from filter_data_helpers import get_halos_based_on_filters, get_profiles
 
 HUBBLE = 0.6711
@@ -39,7 +40,8 @@ profiles_result = profiles_result[(profiles_result.index > 0.01) & (profiles_res
 
 
 # Bin halo_IDs by M_Crit200
-mass_ranges = [(0, 2), (2, 10), (10, 100), (100, 1000)]
+mass_ranges = [(1, 2), (2, 10), (10, 100), (100, 1000)]
+label_mass_ranges = [(1e10*low/HUBBLE, 1e10*high/HUBBLE) for (low, high) in mass_ranges]
 halo_IDs_bins = [list(halo_ids_result[(halo_ids_result["M_Crit200"] >= low) & (halo_ids_result["M_Crit200"] < high)]["halo_unique_id"]) for (low, high) in mass_ranges]
 print(halo_IDs_bins)
 
@@ -47,8 +49,8 @@ print(halo_IDs_bins)
 fig, ax = plt.subplots(1, 1, figsize=(8, 5))
 
 
-for mass_range, halo_IDs_bin in zip(mass_ranges, halo_IDs_bins):
-    low, high = mass_range
+for mass_range, halo_IDs_bin in zip(label_mass_ranges, halo_IDs_bins):
+    low, high = np.log10(mass_range)
 
     binned_profiles = profiles_result[halo_IDs_bin]
     print(binned_profiles)
@@ -59,7 +61,7 @@ for mass_range, halo_IDs_bin in zip(mass_ranges, halo_IDs_bins):
     print(profiles_16)
 
     ax.fill_between(profiles_16.index, profiles_16, profiles_84, alpha=0.2)
-    profiles_median.plot(label=f"{low} <=" + r" $M_{200c}/(10^{10} \cdot M_{\odot}) <$" + f" {high}")
+    profiles_median.plot(label=f"{low:.1f} <=" + r" $log_{10} (M_{200c} / M_{\odot}) <$" + f" {high:.1f}")
 
 # Display plot
 ax.set_xscale("log")
