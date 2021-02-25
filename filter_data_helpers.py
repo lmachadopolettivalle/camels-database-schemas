@@ -8,7 +8,7 @@ set_database_filename(DATABASE_FILENAME)
 def get_all_simulation_details():
     query = f"""
     SELECT 
-    simulation_unique_id, simulation_description, redshift
+    *
     FROM simulations
     """
 
@@ -58,7 +58,7 @@ def get_profiles(list_of_halo_ids, list_of_simulation_ids, list_of_properties):
         halo_in_clause = "halo_unique_id IN (" + ",".join([f"'{h}'" for h in list_of_halo_ids]) + ")"
         query_where_clauses.append(halo_in_clause)
     if len(list_of_simulation_ids) != 0:
-        simulation_in_clause = "simulation_id IN (" + ",".join([f"'{s}'" for s in list_of_simulation_ids]) + ")"
+        simulation_in_clause = "simulation_unique_id IN (" + ",".join([f"'{s}'" for s in list_of_simulation_ids]) + ")"
         query_where_clauses.append(simulation_in_clause)
     if len(list_of_properties) != 0:
         properties_in_clause = "property_key IN (" + ",".join([f"'{p}'" for p in list_of_properties]) + ")"
@@ -75,10 +75,10 @@ if __name__ == "__main__":
     get_all_simulation_details()
     get_halos_based_on_filters(
         list_of_inequality_filters=[("M_Crit200", 30, 200)],
-        list_of_equality_filters=[("simulation_id", ["sample ID 1", "sample ID 2"])],
+        list_of_equality_filters=[("simulation_unique_id", ["IllustrisTNG_1P_22", "sample ID 2"])],
     )
     get_profiles(
         list_of_halo_ids=["halo_0", "nonexistent halo ID"],
-        list_of_simulation_ids=["simulation ID 1", "sample ID 2"],
+        list_of_simulation_ids=["IllustrisTNG_1P_22", "sample ID 2"],
         list_of_properties=["gas_density"]
     )

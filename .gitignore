@@ -1,4 +1,5 @@
 .ipynb_checkpoints
+*.txt
 *.swp
 *.pdf
 __pycache__
