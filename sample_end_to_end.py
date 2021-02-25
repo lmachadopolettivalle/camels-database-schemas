@@ -7,14 +7,14 @@ HUBBLE = 0.6711
 # Select halos based on mass cut and simulation ID
 halo_ids_result = get_halos_based_on_filters(
     list_of_inequality_filters=[("M_Crit200", 1/HUBBLE, 1e5/HUBBLE)],
-    list_of_equality_filters=[("simulation_id", ["sample simulation ID"])]
+    list_of_equality_filters=[("simulation_unique_id", ["IllustrisTNG_1P_22"])]
 )
 print(halo_ids_result)
 
 
 # Select profiles for the filtered halo IDs
 halo_IDs = halo_ids_result["halo_unique_id"]
-simulation_IDs = halo_ids_result["simulation_id"]
+simulation_IDs = halo_ids_result["simulation_unique_id"]
 
 print(halo_IDs)
 print(simulation_IDs)
