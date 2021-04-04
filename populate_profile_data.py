@@ -19,7 +19,8 @@ simulation_details = profile_filename.split("_")
 
 SIMULATION_SUITE = simulation_details[0]
 SIMULATION_NAME = f"{simulation_details[1]}_{simulation_details[2]}" # Assumes all simulation names have an underscore in them
-SIMULATION_REDSHIFT = float(simulation_details[3])
+SIMULATION_REDSHIFT = float(simulation_details[3].replace(".npz", ""))
+print(SIMULATION_REDSHIFT)
 SIMULATION_UNIQUE_ID = f"{SIMULATION_SUITE}_{SIMULATION_NAME}"
 
 # Set database filename
