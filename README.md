@@ -30,16 +30,29 @@ source venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-### Scripts
+### One-Time Scripts to populate database
 To create a new empty database file:
 ```
 python create_empty_database.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0_gasdensity.npz"
 ```
 
-To populate the SQL database:
+To populate the simulation metadata:
+```
+python populate_simulations_table.py -f "sample.db"
+```
+
+To populate the profile data (using only one file):
 ```
 python populate_profile_data.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0_gasdensity.npz"
 ```
+
+OR, to populate the profile data (using all available files):
+(NOTE: this assumes all `.npz` files are in the root directory, where the scripts are executed)
+```
+python bulk_populate_profiles.py
+```
+
+### Analysis Scripts to fetch data:
 
 Useful SQL query/filtering functions:
 ```

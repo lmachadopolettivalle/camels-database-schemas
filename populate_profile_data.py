@@ -20,7 +20,7 @@ simulation_details = profile_filename.split("_")
 SIMULATION_SUITE = simulation_details[0]
 SIMULATION_NAME = f"{simulation_details[1]}_{simulation_details[2]}" # Assumes all simulation names have an underscore in them
 SIMULATION_REDSHIFT = float(simulation_details[3].replace(".npz", ""))
-print(SIMULATION_REDSHIFT)
+#print(SIMULATION_REDSHIFT)
 SIMULATION_UNIQUE_ID = f"{SIMULATION_SUITE}_{SIMULATION_NAME}"
 
 # Set database filename
@@ -41,7 +41,7 @@ number_halos = len(illstack_global_properties[
 # Setup list of columns
 halos_columns_list = ["halo_unique_id", "simulation_unique_id", "redshift"]
 halos_columns_list.extend(list(illstack_global_properties.keys()))
-print(halos_columns_list)
+#print(halos_columns_list)
 
 # Setup list of rows to be inserted
 for i in range(number_halos):
