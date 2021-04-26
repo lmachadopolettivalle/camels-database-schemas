@@ -22,7 +22,7 @@ print(simulation_IDs)
 profiles_result = get_profiles(
     list_of_halo_ids=halo_IDs,
     list_of_simulation_ids=simulation_IDs,
-    list_of_properties=["gas_density"]
+    list_of_properties=["gas_density"] # See options in illstack_helpers.py
 )
 
 print(profiles_result)

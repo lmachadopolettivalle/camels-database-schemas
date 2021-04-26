@@ -1,6 +1,5 @@
 .ipynb_checkpoints
 *.gz
-*.txt
 *.swp
 *.pdf
 __pycache__

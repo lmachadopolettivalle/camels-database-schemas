@@ -15,10 +15,10 @@ db_filename = args.database_filename
 set_database_filename(db_filename)
 
 # Read simulation data from CAMELS text files
-# Text files from https://github.com/franciscovillaescusa/CAMELS/tree/6bfc303f73f8778791afead51fbd4d399dff5516/setup/IllustrisTNG
+# Text files from https://github.com/franciscovillaescusa/CAMELS/tree/6bfc303f73f8778791afead51fbd4d399dff5516/setup/
 CAMELS_simulations_textfiles = {
-    "IllustrisTNG" : "CosmoAstroSeed_IllustrisTNG.txt",
-    "SIMBA" : "CosmoAstroSeed_SIMBA.txt"
+    "IllustrisTNG" : "CAMELS_parameters/CosmoAstroSeed_IllustrisTNG.txt",
+    "SIMBA" : "CAMELS_parameters/CosmoAstroSeed_SIMBA.txt"
 }
 
 CAMELS_simulations_data = []
