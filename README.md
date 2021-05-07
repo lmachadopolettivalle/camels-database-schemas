@@ -33,7 +33,7 @@ python -m pip install -r requirements.txt
 ### One-Time Scripts to populate database
 To create a new empty database file:
 ```
-python create_empty_database.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0_gasdensity.npz"
+python create_empty_database.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0.npz"
 ```
 
 To populate the simulation metadata:
@@ -43,7 +43,7 @@ python populate_simulations_table.py -f "sample.db"
 
 To populate the profile data (using only one file):
 ```
-python populate_profile_data.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0_gasdensity.npz"
+python populate_profile_data.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0.npz"
 ```
 
 OR, to populate the profile data (using all available files):
