@@ -70,7 +70,7 @@ for i in range(number_halos):
     for j, radius in enumerate(radial_bins):
         for k, v in illstack_profile_properties.items():
             profiles_entry = []
-            profiles_entry.append(halo_ids[i]) # halo_unique_id
+            profiles_entry.append(halo_ids[i]) # ID
             profiles_entry.append(SIMULATION_UNIQUE_ID) # simulation_unique_id
             profiles_entry.append(SIMULATION_REDSHIFT) # redshift
             profiles_entry.append(radius) # radius

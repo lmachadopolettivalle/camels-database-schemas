@@ -13,7 +13,7 @@ print(halo_ids_result)
 
 
 # Select profiles for the filtered halo IDs
-halo_IDs = halo_ids_result["halo_unique_id"]
+halo_IDs = halo_ids_result["ID"]
 simulation_IDs = halo_ids_result["simulation_unique_id"]
 
 print(halo_IDs)
@@ -32,7 +32,7 @@ profiles_result["radius"] *= 1 / (HUBBLE * 1e3) # Convert to Mpc
 profiles_result["property_value"] *= 1e10 * HUBBLE * HUBBLE # Convert to Msun * kpc^-3
 
 # Plot profiles for different halos
-profiles_result = profiles_result.pivot(index="radius", columns="halo_unique_id", values="property_value")
+profiles_result = profiles_result.pivot(index="radius", columns="ID", values="property_value")
 print(profiles_result)
 
 # Filter radial values
@@ -42,7 +42,7 @@ profiles_result = profiles_result[(profiles_result.index > 0.01) & (profiles_res
 # Bin halo_IDs by M_Crit200
 mass_ranges = [(1, 2), (2, 10), (10, 100), (100, 1000)]
 label_mass_ranges = [(1e10*low/HUBBLE, 1e10*high/HUBBLE) for (low, high) in mass_ranges]
-halo_IDs_bins = [list(halo_ids_result[(halo_ids_result["M_Crit200"] >= low) & (halo_ids_result["M_Crit200"] < high)]["halo_unique_id"]) for (low, high) in mass_ranges]
+halo_IDs_bins = [list(halo_ids_result[(halo_ids_result["M_Crit200"] >= low) & (halo_ids_result["M_Crit200"] < high)]["ID"]) for (low, high) in mass_ranges]
 print(halo_IDs_bins)
 
 # Compute and plot percentiles of profile data

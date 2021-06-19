@@ -55,7 +55,7 @@ def get_profiles(list_of_halo_ids, list_of_simulation_ids, list_of_properties):
     query_where_clauses = []
 
     if len(list_of_halo_ids) != 0:
-        halo_in_clause = "halo_unique_id IN (" + ",".join([f"'{h}'" for h in list_of_halo_ids]) + ")"
+        halo_in_clause = "ID IN (" + ",".join([f"'{h}'" for h in list_of_halo_ids]) + ")"
         query_where_clauses.append(halo_in_clause)
     if len(list_of_simulation_ids) != 0:
         simulation_in_clause = "simulation_unique_id IN (" + ",".join([f"'{s}'" for s in list_of_simulation_ids]) + ")"
