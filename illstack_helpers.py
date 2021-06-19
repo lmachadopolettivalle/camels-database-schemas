@@ -1,7 +1,7 @@
 import numpy as np
 
 # List of properties
-global_properties_list = ['M_Crit200', 'R_Crit200', 'GroupFirstSub', 'sfr', 'mstar', 'GroupBHMass', 'GroupBHMdot', 'Group_GasH', 'Group_GasHe', 'Group_GasC', 'Group_GasN', 'Group_GasO', 'Group_GasNe', 'Group_GasMg', 'Group_GasSi', 'Group_GasFe', 'GroupGasMetallicity', 'GroupLen', 'GroupMass', 'GroupNsubs', 'Group_StarH', 'Group_StarHe', 'Group_StarC', 'Group_StarN', 'Group_StarO', 'Group_StarNe', 'Group_StarMg', 'Group_StarSi', 'Group_StarFe', 'GroupStarMetallicity', 'GroupVelx', 'GroupVely', 'GroupVelz', 'GroupWindMass', 'M_Crit500', 'M_Mean200', 'M_TopHat200', 'R_Crit500', 'R_Mean200', 'R_TopHat200']
+global_properties_list = ['ID', 'M_Crit200', 'R_Crit200', 'GroupFirstSub', 'sfr', 'mstar', 'GroupBHMass', 'GroupBHMdot', 'Group_GasH', 'Group_GasHe', 'Group_GasC', 'Group_GasN', 'Group_GasO', 'Group_GasNe', 'Group_GasMg', 'Group_GasSi', 'Group_GasFe', 'GroupGasMetallicity', 'GroupLen', 'GroupMass', 'GroupNsubs', 'Group_StarH', 'Group_StarHe', 'Group_StarC', 'Group_StarN', 'Group_StarO', 'Group_StarNe', 'Group_StarMg', 'Group_StarSi', 'Group_StarFe', 'GroupStarMetallicity', 'GroupVelx', 'GroupVely', 'GroupVelz', 'GroupWindMass', 'M_Crit500', 'M_Mean200', 'M_TopHat200', 'R_Crit500', 'R_Mean200', 'R_TopHat200']
 
 profile_properties_key = "val"
 profile_properties_list = ["gas_density", "gas_pressure", "metallicity", "temperature"] # data["val"] is a 3D array (profile_type, value, radial bin). This is the list of profile types
@@ -11,10 +11,13 @@ def get_illstack_global_properties(profile_filename):
         data = dict(f)
 
     global_properties_dict = {
-        k : v
-        for k, v in data.items()
-        if k in global_properties_list
+        k : data[k]
+        for k in global_properties_list
+        if k in data.keys()
     }
+
+    print(global_properties_dict["ID"])
+    print(global_properties_dict["GroupFirstSub"])
 
     return global_properties_dict
 

@@ -1,4 +1,5 @@
 import argparse
+import numpy as np
 
 from database_helpers import set_database_filename, create_table, remove_existing_db_files
 from illstack_helpers import get_illstack_global_properties
@@ -48,7 +49,12 @@ halos_columns = {
 illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 for k in illstack_global_properties.keys():
-    halos_columns[k] = "REAL"
+    element = illstack_global_properties[k][0]
+    print(k, element, type(element))
+    if isinstance(element, np.int64) or isinstance(element, int):
+        halos_columns[k] = "INTEGER"
+    else:
+        halos_columns[k] = "REAL"
 
 create_table(
     "halos",

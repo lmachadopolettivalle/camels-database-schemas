@@ -73,12 +73,15 @@ def get_profiles(list_of_halo_ids, list_of_simulation_ids, list_of_properties):
 
 if __name__ == "__main__":
     get_all_simulation_details()
-    get_halos_based_on_filters(
+    halos = get_halos_based_on_filters(
         list_of_inequality_filters=[("M_Crit200", 30, 200)],
         list_of_equality_filters=[("simulation_unique_id", ["IllustrisTNG_1P_22", "sample ID 2"])],
     )
-    get_profiles(
+    print(halos)
+    
+    profiles = get_profiles(
         list_of_halo_ids=["halo_0", "nonexistent halo ID"],
         list_of_simulation_ids=["IllustrisTNG_1P_22", "sample ID 2"],
         list_of_properties=["gas_density"]
     )
+    #print(profiles)

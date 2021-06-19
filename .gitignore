@@ -4,3 +4,5 @@
 *.pdf
 __pycache__
 venv
+*.npz
+.DS_Store
