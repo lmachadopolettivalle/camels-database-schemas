@@ -41,9 +41,8 @@ create_table(
 ### halos
 # based on list of properties from Illstack
 halos_columns = {
-    "halo_unique_id" : "TEXT NOT NULL",
-    "simulation_unique_id" : "TEXT NOT NULL",
     "redshift" : "REAL NOT NULL",
+    "simulation_unique_id" : "TEXT NOT NULL",
 }
 
 illstack_global_properties = get_illstack_global_properties(profile_filename)
@@ -65,7 +64,7 @@ create_table(
 create_table(
     "profiles",
     {
-        "halo_unique_id" : "TEXT NOT NULL",
+        "ID" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
         "redshift" : "REAL NOT NULL",
         "radius" : "REAL NOT NULL",

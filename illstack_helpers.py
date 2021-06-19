@@ -16,9 +16,6 @@ def get_illstack_global_properties(profile_filename):
         if k in data.keys()
     }
 
-    print(global_properties_dict["ID"])
-    print(global_properties_dict["GroupFirstSub"])
-
     return global_properties_dict
 
 
