@@ -18,7 +18,7 @@ set_database_filename(db_filename)
 # Remove database file if already exists
 remove_existing_db_files()
 
-# Step 1: create necessary tables
+# Create necessary tables
 ### simulations
 # Table schema motivated by https://camels.readthedocs.io/en/latest/IllustrisTNG_params.html#illustristng-params
 create_table(
@@ -69,7 +69,19 @@ create_table(
         "redshift" : "REAL NOT NULL",
         "radius" : "REAL NOT NULL",
         "property_key" : "TEXT NOT NULL",
-        "property_value" : "REAL"
+        "property_value" : "REAL",
     },
 )
 
+### subhalos
+# Properties motivated by https://www.tng-project.org/data/docs/specifications/#sec2b
+create_table(
+    "subhalos",
+    {
+        "subhalo_id" : "INTEGER NOT NULL",
+        "halo_id" : "INTEGER NOT NULL",
+        "simulation_unique_id" : "TEXT NOT NULL",
+        "redshift" : "REAL NOT NULL",
+        "SubhaloBHMass" : "REAL",
+    },
+)
