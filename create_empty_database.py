@@ -80,13 +80,13 @@ create_table(
 create_table(
     "subhalos",
     {
-        "subhalo_id" : "INTEGER NOT NULL",
-        "halo_id" : "INTEGER NOT NULL",
+        "subhaloID" : "INTEGER NOT NULL",
+        "haloID" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
         "redshift" : "REAL NOT NULL",
         "SubhaloBHMass" : "REAL",
     },
-    unique=("subhalo_id", "halo_id", "simulation_unique_id", "redshift")
+    unique=("subhaloID", "haloID", "simulation_unique_id", "redshift")
 )
 
 ### mergertree
@@ -94,8 +94,8 @@ create_table(
 create_table(
     "mergertree",
     {
-        "subhalo_id" : "INTEGER NOT NULL", # In mergertree, subhalo_id is a unique ID, and has NOTHING to do with subhalo_id from the subhalos table. To match with the subhalo_id from the subhalos table, look at the "subfind_id" column within this table.
-        "subfind_id" : "INTEGER NOT NULL", # This corresponds to "subhalo_id" in the subhalos table. The combination (subfind_id, redshift) is a unique identifier of any subhalo within a simulation.
+        "subhaloID" : "INTEGER NOT NULL", # In mergertree, subhaloID is a unique ID, and has NOTHING to do with subhaloID from the subhalos table. To match with the subhaloID from the subhalos table, look at the "subfind_id" column within this table.
+        "subfindID" : "INTEGER NOT NULL", # This corresponds to "subhaloID" in the subhalos table. The combination (subfindID, redshift) is a unique identifier of any subhalo within a simulation.
         "redshift" : "REAL NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
         "LastProgenitorID" : "INTEGER NOT NULL",
@@ -111,5 +111,5 @@ create_table(
         "Mass" : "REAL NOT NULL",
         "MassHistory" : "INTEGER NOT NULL",
     },
-    unique=("subhalo_id", "subfind_id", "redshift", "simulation_unique_id")
+    unique=("subhaloID", "subfind_id", "redshift", "simulation_unique_id")
 )

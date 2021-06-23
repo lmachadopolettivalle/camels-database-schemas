@@ -84,7 +84,7 @@ def create_table(table_name: str, columns: dict, primary_key: tuple = None, fore
     """ Create a table in the database
     table_name: Example = "halos"
     columns: Example = {
-        "halo_id" : "INTEGER PRIMARY KEY",
+        "haloID" : "INTEGER PRIMARY KEY",
         "halo_M500c" : "REAL"
     }
     """

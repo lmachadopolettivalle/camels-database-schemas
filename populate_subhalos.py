@@ -47,8 +47,8 @@ mask = np.where((subhalos["SubhaloGrNr"] == halo_id))[0]
 # Set up dataset for database
 subhalos_data= list(
     zip(
-        list(mask), #subhalo_id
-        [halo_id] * len(mask), #halo_id
+        list(mask), #subhaloID
+        [halo_id] * len(mask), #haloID
         [simulation_unique_id] * len(mask), # simulation_unique_id
         [redshift] * len(mask), # Redshift
         list(subhalos["SubhaloBHMass"][mask]), #SubhaloBHMass
@@ -59,8 +59,8 @@ print(subhalos["SubhaloBHMass"][mask])
 print(type(subhalos["SubhaloBHMass"][mask][0]))
 
 # Setup list of columns
-subhalos_columns_list = ["subhalo_id", "halo_id", "simulation_unique_id", "redshift"]
-subhalo_fields.remove("SubhaloGrNr") # SubhaloGrNr should not be a column, since it's already present as "halo_id"
+subhalos_columns_list = ["subhaloID", "haloID", "simulation_unique_id", "redshift"]
+subhalo_fields.remove("SubhaloGrNr") # SubhaloGrNr should not be a column, since it's already present as "haloID"
 subhalos_columns_list.extend(subhalo_fields)
 
 populate_table(
