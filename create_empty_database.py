@@ -35,6 +35,7 @@ create_table(
         "A_AGN2" : "REAL NOT NULL",
         "seed" : "REAL NOT NULL",
     },
+    unique=("simulation_suite", "simulation_name")
 )
 
 
@@ -49,7 +50,6 @@ illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 for k in illstack_global_properties.keys():
     element = illstack_global_properties[k][0]
-    print(k, element, type(element))
     if isinstance(element, np.int64) or isinstance(element, int):
         halos_columns[k] = "INTEGER"
     else:
@@ -57,7 +57,8 @@ for k in illstack_global_properties.keys():
 
 create_table(
     "halos",
-    halos_columns
+    halos_columns,
+    unique=("redshift", "simulation_unique_id", "ID")
 )
 
 ### profiles
@@ -71,6 +72,7 @@ create_table(
         "property_key" : "TEXT NOT NULL",
         "property_value" : "REAL",
     },
+    unique=("ID", "simulation_unique_id", "redshift", "radius", "property_key")
 )
 
 ### subhalos
@@ -84,4 +86,30 @@ create_table(
         "redshift" : "REAL NOT NULL",
         "SubhaloBHMass" : "REAL",
     },
+    unique=("subhalo_id", "halo_id", "simulation_unique_id", "redshift")
+)
+
+### mergertree
+# Properties motivated by https://www.tng-project.org/data/docs/specifications/#sec4a
+create_table(
+    "mergertree",
+    {
+        "subhalo_id" : "INTEGER NOT NULL", # In mergertree, subhalo_id is a unique ID, and has NOTHING to do with subhalo_id from the subhalos table. To match with the subhalo_id from the subhalos table, look at the "subfind_id" column within this table.
+        "subfind_id" : "INTEGER NOT NULL", # This corresponds to "subhalo_id" in the subhalos table. The combination (subfind_id, redshift) is a unique identifier of any subhalo within a simulation.
+        "redshift" : "REAL NOT NULL",
+        "simulation_unique_id" : "TEXT NOT NULL",
+        "LastProgenitorID" : "INTEGER NOT NULL",
+        "MainLeafProgenitorID" : "INTEGER NOT NULL",
+        "RootDescendantID" : "INTEGER NOT NULL",
+        "TreeID" : "INTEGER NOT NULL",
+        "FirstProgenitorID" : "INTEGER NOT NULL",
+        "NextProgenitorID" : "INTEGER NOT NULL",
+        "DescendantID" : "INTEGER NOT NULL",
+        "FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NumParticles" : "INTEGER NOT NULL",
+        "Mass" : "REAL NOT NULL",
+        "MassHistory" : "INTEGER NOT NULL",
+    },
+    unique=("subhalo_id", "subfind_id", "redshift", "simulation_unique_id")
 )

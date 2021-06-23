@@ -80,7 +80,7 @@ def executemany_query(query: str, data: list):
     cursor.close()
     conn.close()
 
-def create_table(table_name: str, columns: dict, primary_key: tuple = None, foreign_key: dict = None):
+def create_table(table_name: str, columns: dict, primary_key: tuple = None, foreign_key: dict = None, unique: list = None):
     """ Create a table in the database
     table_name: Example = "halos"
     columns: Example = {
@@ -94,6 +94,8 @@ def create_table(table_name: str, columns: dict, primary_key: tuple = None, fore
         columns_list.append(f"PRIMARY KEY ({', '.join(primary_key)})")
     if foreign_key is not None:
         columns_list.append(f"FOREIGN KEY ({foreign_key['local_column']}) REFERENCES {foreign_key['foreign_table']} ({foreign_key['foreign_column']})")
+    if unique is not None:
+        columns_list.append(f"UNIQUE ({', '.join(unique)}) ON CONFLICT FAIL")
 
     query = f"""
     CREATE TABLE IF NOT EXISTS {table_name}
