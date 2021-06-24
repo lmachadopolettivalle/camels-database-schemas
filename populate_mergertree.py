@@ -1,4 +1,4 @@
-# populate_subhalos should be executed in an environment with the following files available:
+# populate_mergertree should be executed in an environment with the following files available:
 # offsets and postprocessing folders
 import argparse
 import numpy as np
@@ -12,7 +12,7 @@ from database_helpers import set_database_filename, populate_table
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--database_filename", help="Database filename to be generated", default="sample.db", type=str)
 parser.add_argument("--snapshot", help="Snapshot number", type=str)
-parser.add_argument("--halo_id", help="ID of the parent FoF Halo from which to load the subhalos", type=str)
+parser.add_argument("--subhalo_id", help="ID of the subhalo for which we should load the Sublink mergertree", type=str)
 parser.add_argument("--simulation_suite", help="Simulation suite in question (e.g. IllustrisTNG, SIMBA)", type=str)
 parser.add_argument("--simulation_name", help="Simulation name in question (e.g. LH_0, 1P_22)", type=str)
 parser.add_argument("--basepath", help="Absolute basepath to the CAMELS output files, used by illustris_python (e.g. '/home/jovyan/Simulations/')", type=str)
@@ -22,7 +22,7 @@ args = parser.parse_args()
 db_filename = args.database_filename
 snapshot_string = f"{args.snapshot:0>3}" # Snapshot, padded to 3 digits (e.g. 001)
 snapshot_int = int(args.snapshot)
-halo_id = int(args.halo_id)
+subhalo_id = int(args.subhalo_id)
 simulation_suite = args.simulation_suite # e.g. IllustrisTNG
 simulation_name = args.simulation_name # e.g. LH_0
 basepath = f"{args.basepath}/{args.simulation_suite}/{args.simulation_name}/" # e.g. /home/jovyan/Simulations/IllustrisTNG/LH_0/
@@ -37,33 +37,34 @@ redshift = SNAPSHOT_TO_REDSHIFT[snapshot_string]
 set_database_filename(db_filename)
 
 # Use illustris_python to load subhalos in the given snapshot and simulation
-subhalo_fields = ["SubhaloGrNr", "SubhaloBHMass"]
-subhalos = il.groupcat.loadSubhalos(basepath, snapshot_int, fields=subhalo_fields)
+mergertree_additional_fields = ["LastProgenitorID"]
+mergertree_fields = ["SubhaloID", "SubfindID", "SnapNum"] + mergertree_additional_fields
+mergertree = il.sublink.loadTree(basepath, snapshot_int, fields=mergertree_fields, onlyMPB=False)
 
-# Filter subhalos based on FoF halo ID (i.e. "SubhaloGrNr")
-mask = np.where((subhalos["SubhaloGrNr"] == halo_id))[0]
+
+
+
+
+
+
 
 # Set up dataset for database
-subhalos_data= list(
+mergertree_data = list(
     zip(
-        list(mask), #subhaloID
-        [halo_id] * len(mask), #haloID
-        [simulation_unique_id] * len(mask), # simulation_unique_id
-        [redshift] * len(mask), # Redshift
-        list(subhalos["SubhaloBHMass"][mask]), #SubhaloBHMass
+        [simulation_unique_id] * mergertree["count"],
+        [SNAPSHOT_TO_REDSHIFT[i] for i in mergertree["SnapNum"]],
+        list(mergertree["SubhaloID"]),
+        list(mergertree["SubfindID"]),
+        list(mergertree["LastProgenitorID"]),
     )
 )
 
-print(subhalos["SubhaloBHMass"][mask])
-print(type(subhalos["SubhaloBHMass"][mask][0]))
-
 # Setup list of columns
-subhalos_columns_list = ["subhaloID", "haloID", "simulation_unique_id", "redshift"]
-subhalo_fields.remove("SubhaloGrNr") # SubhaloGrNr should not be a column, since it's already present as "haloID"
-subhalos_columns_list.extend(subhalo_fields)
+mergertree_columns = ["simulation_unique_id", "redshit", "subhaloID", "subfindID"]
+mergertree_columns.extend(mergertree_additional_fields)
 
 populate_table(
-    "subhalos",
-    subhalos_columns_list,
-    subhalos_data
+    "mergertree",
+    mergertree_columns,
+    mergertree_data
 )

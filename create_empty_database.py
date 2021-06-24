@@ -94,22 +94,22 @@ create_table(
 create_table(
     "mergertree",
     {
-        "subhaloID" : "INTEGER NOT NULL", # In mergertree, subhaloID is a unique ID, and has NOTHING to do with subhaloID from the subhalos table. To match with the subhaloID from the subhalos table, look at the "subfind_id" column within this table.
+        "subhaloID" : "INTEGER NOT NULL", # In mergertree, subhaloID is a unique ID, and has NOTHING to do with subhaloID from the subhalos table. To match with the subhaloID from the subhalos table, look at the "subfindID" column within this table.
         "subfindID" : "INTEGER NOT NULL", # This corresponds to "subhaloID" in the subhalos table. The combination (subfindID, redshift) is a unique identifier of any subhalo within a simulation.
         "redshift" : "REAL NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
         "LastProgenitorID" : "INTEGER NOT NULL",
-        "MainLeafProgenitorID" : "INTEGER NOT NULL",
-        "RootDescendantID" : "INTEGER NOT NULL",
-        "TreeID" : "INTEGER NOT NULL",
-        "FirstProgenitorID" : "INTEGER NOT NULL",
-        "NextProgenitorID" : "INTEGER NOT NULL",
-        "DescendantID" : "INTEGER NOT NULL",
-        "FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
-        "NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
-        "NumParticles" : "INTEGER NOT NULL",
-        "Mass" : "REAL NOT NULL",
-        "MassHistory" : "INTEGER NOT NULL",
+        #"MainLeafProgenitorID" : "INTEGER NOT NULL",
+        #"RootDescendantID" : "INTEGER NOT NULL",
+        #"TreeID" : "INTEGER NOT NULL",
+        #"FirstProgenitorID" : "INTEGER NOT NULL",
+        #"NextProgenitorID" : "INTEGER NOT NULL",
+        #"DescendantID" : "INTEGER NOT NULL",
+        #"FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        #"NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        #"NumParticles" : "INTEGER NOT NULL",
+        #"Mass" : "REAL NOT NULL",
+        #"MassHistory" : "INTEGER NOT NULL",
     },
-    unique=("subhaloID", "subfind_id", "redshift", "simulation_unique_id")
+    unique=("subhaloID", "subfindID", "redshift", "simulation_unique_id")
 )
