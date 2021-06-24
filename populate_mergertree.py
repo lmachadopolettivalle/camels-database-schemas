@@ -39,7 +39,7 @@ set_database_filename(db_filename)
 # Use illustris_python to load subhalos in the given snapshot and simulation
 mergertree_additional_fields = ["LastProgenitorID"]
 mergertree_fields = ["SubhaloID", "SubfindID", "SnapNum"] + mergertree_additional_fields
-mergertree = il.sublink.loadTree(basepath, snapshot_int, fields=mergertree_fields, onlyMPB=False)
+mergertree = il.sublink.loadTree(basepath, snapshot_int, subhalo_id, fields=mergertree_fields, onlyMPB=False)
 
 
 
@@ -52,7 +52,7 @@ mergertree = il.sublink.loadTree(basepath, snapshot_int, fields=mergertree_field
 mergertree_data = list(
     zip(
         [simulation_unique_id] * mergertree["count"],
-        [SNAPSHOT_TO_REDSHIFT[i] for i in mergertree["SnapNum"]],
+        [SNAPSHOT_TO_REDSHIFT[f"{i:0>3}"] for i in mergertree["SnapNum"]],
         list(mergertree["SubhaloID"]),
         list(mergertree["SubfindID"]),
         list(mergertree["LastProgenitorID"]),
@@ -60,7 +60,7 @@ mergertree_data = list(
 )
 
 # Setup list of columns
-mergertree_columns = ["simulation_unique_id", "redshit", "subhaloID", "subfindID"]
+mergertree_columns = ["simulation_unique_id", "redshift", "subhaloID", "subfindID"]
 mergertree_columns.extend(mergertree_additional_fields)
 
 populate_table(
