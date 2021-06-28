@@ -58,7 +58,6 @@ populate_table(
     halos_data
 )
 
-
 ### profiles
 profiles_data = [] # List of tuples with profile properties
 number_halos = len(illstack_profile_properties[
