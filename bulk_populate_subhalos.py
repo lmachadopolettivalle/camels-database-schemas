@@ -30,5 +30,3 @@ for _, halo in halos.iterrows():
 
     cmd = subprocess.run(command, shell=True)
     print(cmd)
-    break
-

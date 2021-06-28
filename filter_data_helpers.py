@@ -124,7 +124,6 @@ def get_mergertree(starting_subfind_id, starting_snapshot, simulation_unique_id)
     AND snapshot = {starting_snapshot}
     AND simulation_unique_id = "{simulation_unique_id}"
     """
-    print(query)
 
     starting_data = execute_query(query)[0]
     main_leaf_progenitor_id = starting_data["MainLeafProgenitorID"]
@@ -144,7 +143,9 @@ def get_mergertree(starting_subfind_id, starting_snapshot, simulation_unique_id)
     return pd.DataFrame(data)
 
 if __name__ == "__main__":
-    get_all_simulation_details()
+    simulations = get_all_simulation_details()
+    print(simulations)
+
     halos = get_halos_based_on_filters(
         list_of_inequality_filters=[("M_Crit200", 30, 200)],
         list_of_equality_filters=[("simulation_unique_id", ["IllustrisTNG_1P_22", "sample ID 2"])],
@@ -152,7 +153,7 @@ if __name__ == "__main__":
     print(halos)
     
     profiles = get_profiles(
-        list_of_halo_ids=["halo_0", "nonexistent halo ID"],
+        list_of_halo_ids=[0, 1],
         list_of_simulation_ids=["IllustrisTNG_1P_22", "sample ID 2"],
         list_of_snapshots=[33],
         list_of_properties=["gas_density"]
