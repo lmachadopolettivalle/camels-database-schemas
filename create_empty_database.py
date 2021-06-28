@@ -42,7 +42,7 @@ create_table(
 ### halos
 # based on list of properties from Illstack
 halos_columns = {
-    "redshift" : "REAL NOT NULL",
+    "snapshot" : "INTEGER NOT NULL",
     "simulation_unique_id" : "TEXT NOT NULL",
 }
 
@@ -50,7 +50,7 @@ illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 for k in illstack_global_properties.keys():
     element = illstack_global_properties[k][0]
-    if isinstance(element, np.int32) or isinstance(element, np.int64) or isinstance(element, int):
+    if isinstance(element, np.int16) or isinstance(element, np.int32) or isinstance(element, np.int64) or isinstance(element, int):
         halos_columns[k] = "INTEGER"
     else:
         halos_columns[k] = "REAL"
@@ -58,7 +58,7 @@ for k in illstack_global_properties.keys():
 create_table(
     "halos",
     halos_columns,
-    unique=("redshift", "simulation_unique_id", "ID")
+    unique=("snapshot", "simulation_unique_id", "ID")
 )
 
 ### profiles
@@ -67,12 +67,12 @@ create_table(
     {
         "ID" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
-        "redshift" : "REAL NOT NULL",
+        "snapshot" : "INTEGER NOT NULL",
         "radius" : "REAL NOT NULL",
         "property_key" : "TEXT NOT NULL",
         "property_value" : "REAL",
     },
-    unique=("ID", "simulation_unique_id", "redshift", "radius", "property_key")
+    unique=("ID", "simulation_unique_id", "snapshot", "radius", "property_key")
 )
 
 ### subhalos
@@ -83,10 +83,58 @@ create_table(
         "subhaloID" : "INTEGER NOT NULL",
         "haloID" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
-        "redshift" : "REAL NOT NULL",
+        "snapshot" : "INTEGER NOT NULL",
         "SubhaloBHMass" : "REAL",
+        "SubhaloBHMdot" : "REAL",
+        "SubhaloBfldDisk" : "REAL",
+        "SubhaloBfldHalo" : "REAL",
+        "SubhaloCM" : "ARRAY",
+        "SubhaloGasMetalFractions" : "ARRAY",
+        "SubhaloGasMetalFractionsHalfRad" : "ARRAY",
+        "SubhaloGasMetalFractionsMaxRad" : "ARRAY",
+        "SubhaloGasMetalFractionsSfr" : "ARRAY",
+        "SubhaloGasMetalFractionsSfrWeighted" : "ARRAY",
+        "SubhaloGasMetallicity" : "REAL",
+        "SubhaloGasMetallicityHalfRad" : "REAL",
+        "SubhaloGasMetallicityMaxRad" : "REAL",
+        "SubhaloGasMetallicitySfr" : "REAL",
+        "SubhaloGasMetallicitySfrWeighted" : "REAL",
+        "SubhaloHalfmassRad" : "REAL",
+        "SubhaloHalfmassRadType" : "ARRAY",
+        "SubhaloIDMostbound" : "REAL",
+        "SubhaloLen" : "REAL",
+        "SubhaloLenType" : "ARRAY",
+        "SubhaloMass" : "REAL",
+        "SubhaloMassInHalfRad" : "REAL",
+        "SubhaloMassInHalfRadType" : "ARRAY",
+        "SubhaloMassInMaxRad" : "REAL",
+        "SubhaloMassInMaxRadType" : "ARRAY",
+        "SubhaloMassInRad" : "REAL",
+        "SubhaloMassInRadType" : "ARRAY",
+        "SubhaloMassType" : "ARRAY",
+        "SubhaloParent" : "REAL",
+        "SubhaloPos" : "ARRAY",
+        "SubhaloSFR" : "REAL",
+        "SubhaloSFRinHalfRad" : "REAL",
+        "SubhaloSFRinMaxRad" : "REAL",
+        "SubhaloSFRinRad" : "REAL",
+        "SubhaloSpin" : "ARRAY",
+        "SubhaloStarMetalFractions" : "ARRAY",
+        "SubhaloStarMetalFractionsHalfRad" : "ARRAY",
+        "SubhaloStarMetalFractionsMaxRad" : "ARRAY",
+        "SubhaloStarMetallicity" : "REAL",
+        "SubhaloStarMetallicityHalfRad" : "REAL",
+        "SubhaloStarMetallicityMaxRad" : "REAL",
+        "SubhaloStellarPhotometrics" : "ARRAY",
+        "SubhaloStellarPhotometricsMassInRad" : "REAL",
+        "SubhaloStellarPhotometricsRad" : "REAL",
+        "SubhaloVel" : "ARRAY",
+        "SubhaloVelDisp" : "REAL",
+        "SubhaloVmax" : "REAL",
+        "SubhaloVmaxRad" : "REAL",
+        "SubhaloWindMass" : "REAL",
     },
-    unique=("subhaloID", "haloID", "simulation_unique_id", "redshift")
+    unique=("subhaloID", "haloID", "simulation_unique_id", "snapshot")
 )
 
 ### mergertree
@@ -95,21 +143,21 @@ create_table(
     "mergertree",
     {
         "subhaloID" : "INTEGER NOT NULL", # In mergertree, subhaloID is a unique ID, and has NOTHING to do with subhaloID from the subhalos table. To match with the subhaloID from the subhalos table, look at the "subfindID" column within this table.
-        "subfindID" : "INTEGER NOT NULL", # This corresponds to "subhaloID" in the subhalos table. The combination (subfindID, redshift) is a unique identifier of any subhalo within a simulation.
-        "redshift" : "REAL NOT NULL",
+        "subfindID" : "INTEGER NOT NULL", # This corresponds to "subhaloID" in the subhalos table. The combination (subfindID, snapshot) is a unique identifier of any subhalo within a simulation.
+        "snapshot" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
         "LastProgenitorID" : "INTEGER NOT NULL",
-        #"MainLeafProgenitorID" : "INTEGER NOT NULL",
-        #"RootDescendantID" : "INTEGER NOT NULL",
-        #"TreeID" : "INTEGER NOT NULL",
-        #"FirstProgenitorID" : "INTEGER NOT NULL",
-        #"NextProgenitorID" : "INTEGER NOT NULL",
-        #"DescendantID" : "INTEGER NOT NULL",
-        #"FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
-        #"NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
-        #"NumParticles" : "INTEGER NOT NULL",
-        #"Mass" : "REAL NOT NULL",
-        #"MassHistory" : "INTEGER NOT NULL",
+        "MainLeafProgenitorID" : "INTEGER NOT NULL",
+        "RootDescendantID" : "INTEGER NOT NULL",
+        "TreeID" : "INTEGER NOT NULL",
+        "FirstProgenitorID" : "INTEGER NOT NULL",
+        "NextProgenitorID" : "INTEGER NOT NULL",
+        "DescendantID" : "INTEGER NOT NULL",
+        "FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NumParticles" : "INTEGER NOT NULL",
+        "Mass" : "REAL NOT NULL",
+        "MassHistory" : "INTEGER NOT NULL",
     },
-    unique=("subhaloID", "subfindID", "redshift", "simulation_unique_id")
+    unique=("subhaloID", "subfindID", "snapshot", "simulation_unique_id")
 )

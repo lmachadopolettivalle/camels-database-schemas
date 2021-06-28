@@ -35,7 +35,8 @@ def convert_array(text):
 sqlite3.register_adapter(np.ndarray, adapt_array)
 # Converts TEXT to np.array when selecting
 sqlite3.register_converter("ARRAY", convert_array)
-# Converts np.int32 and np.int64 into traditional int when inserting
+# Converts numpy integers into traditional int when inserting
+sqlite3.register_adapter(np.int16, lambda val: int(val))
 sqlite3.register_adapter(np.int32, lambda val: int(val))
 sqlite3.register_adapter(np.int64, lambda val: int(val))
 # Converts np.float into traditional float when inserting
@@ -113,7 +114,7 @@ def populate_table(table_name: str, columns: list, data: list):
     values_placeholders = ", ".join(["?" for _ in columns])
 
     query = f"""
-    INSERT INTO {table_name}
+    INSERT OR IGNORE INTO {table_name}
     ({columns_string})
     VALUES ({values_placeholders})
     """

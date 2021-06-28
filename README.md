@@ -33,7 +33,7 @@ python -m pip install -r requirements.txt
 ### One-Time Scripts to populate database
 To create a new empty database file:
 ```
-python create_empty_database.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0.npz"
+python create_empty_database.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_033.npz"
 ```
 
 To populate the simulation metadata:
@@ -43,13 +43,23 @@ python populate_simulations_table.py -f "sample.db"
 
 To populate the profile data (using only one file):
 ```
-python populate_profile_data.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_0.0.npz"
+python populate_profile_data.py -f "sample.db" --profile_filename "IllustrisTNG_1P_22_033.npz"
 ```
 
 OR, to populate the profile data (using all available files):
 (NOTE: this assumes all `.npz` files are in the root directory, where the scripts are executed)
 ```
 python bulk_populate_profiles.py
+```
+
+To populate the subhalos data (for a specific FoF halo):
+```
+python populate_subhalos.py -f sample.db --snapshot 33 --halo_id 1 --simulation_suite IllustrisTNG --simulation_name LH_0 --basepath "/home/jovyan/Simulations/"
+```
+
+To populate the mergertree data (for a specific subhalo):
+```
+python populate_mergertree.py -f sample.db --snapshot 33 --subhalo_id 290 --simulation_suite IllustrisTNG --simulation_name LH_0 --basepath "/home/jovyan/Simulations/"
 ```
 
 ### Analysis Scripts to fetch data:
