@@ -32,8 +32,9 @@ simulation_unique_id = f"{simulation_suite}_{simulation_name}"
 set_database_filename(db_filename)
 
 # Use illustris_python to load subhalos in the given snapshot and simulation
-subhalo_fields = ["SubhaloGrNr", "SubhaloBHMass"]
+subhalo_fields = ["SubhaloBHMass", "SubhaloBHMdot", "SubhaloBfldDisk", "SubhaloBfldHalo", "SubhaloCM", "SubhaloGasMetalFractions", "SubhaloGasMetalFractionsHalfRad", "SubhaloGasMetalFractionsMaxRad", "SubhaloGasMetalFractionsSfr", "SubhaloGasMetalFractionsSfrWeighted", "SubhaloGasMetallicity", "SubhaloGasMetallicityHalfRad", "SubhaloGasMetallicityMaxRad", "SubhaloGasMetallicitySfr", "SubhaloGasMetallicitySfrWeighted", "SubhaloGrNr", "SubhaloHalfmassRad", "SubhaloHalfmassRadType", "SubhaloIDMostbound", "SubhaloLen", "SubhaloLenType", "SubhaloMass", "SubhaloMassInHalfRad", "SubhaloMassInHalfRadType", "SubhaloMassInMaxRad", "SubhaloMassInMaxRadType", "SubhaloMassInRad", "SubhaloMassInRadType", "SubhaloMassType", "SubhaloParent", "SubhaloPos", "SubhaloSFR", "SubhaloSFRinHalfRad", "SubhaloSFRinMaxRad", "SubhaloSFRinRad", "SubhaloSpin", "SubhaloStarMetalFractions", "SubhaloStarMetalFractionsHalfRad", "SubhaloStarMetalFractionsMaxRad", "SubhaloStarMetallicity", "SubhaloStarMetallicityHalfRad", "SubhaloStarMetallicityMaxRad", "SubhaloStellarPhotometrics", "SubhaloStellarPhotometricsMassInRad", "SubhaloStellarPhotometricsRad", "SubhaloVel", "SubhaloVelDisp", "SubhaloVmax", "SubhaloVmaxRad", "SubhaloWindMass"]
 subhalos = il.groupcat.loadSubhalos(basepath, snapshot, fields=subhalo_fields)
+subhalo_fields.remove("SubhaloGrNr") # Do not include it as part of the insert query below, since it's already included as "haloID"
 
 # Filter subhalos based on FoF halo ID (i.e. "SubhaloGrNr")
 mask = np.where((subhalos["SubhaloGrNr"] == halo_id))[0]
@@ -41,11 +42,11 @@ mask = np.where((subhalos["SubhaloGrNr"] == halo_id))[0]
 # Set up dataset for database
 subhalos_data= list(
     zip(
-        list(mask), #subhaloID
-        [halo_id] * len(mask), #haloID
+        list(mask), # subhaloID
+        list(subhalos["SubhaloGrNr"][mask]), # haloID
         [simulation_unique_id] * len(mask), # simulation_unique_id
         [snapshot] * len(mask), # Snapshot Number
-        list(subhalos["SubhaloBHMass"][mask]), #SubhaloBHMass
+        *[list(subhalos[field][mask]) for field in subhalo_fields],
     )
 )
 
@@ -54,7 +55,6 @@ print(type(subhalos["SubhaloBHMass"][mask][0]))
 
 # Setup list of columns
 subhalos_columns_list = ["subhaloID", "haloID", "simulation_unique_id", "snapshot"]
-subhalo_fields.remove("SubhaloGrNr") # SubhaloGrNr should not be a column, since it's already present as "haloID"
 subhalos_columns_list.extend(subhalo_fields)
 
 populate_table(

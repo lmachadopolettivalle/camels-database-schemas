@@ -39,6 +39,7 @@ sqlite3.register_converter("ARRAY", convert_array)
 sqlite3.register_adapter(np.int16, lambda val: int(val))
 sqlite3.register_adapter(np.int32, lambda val: int(val))
 sqlite3.register_adapter(np.int64, lambda val: int(val))
+sqlite3.register_adapter(np.uint32, lambda val: int(val))
 # Converts np.float into traditional float when inserting
 sqlite3.register_adapter(np.float32, lambda val: float(val))
 

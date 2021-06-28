@@ -50,7 +50,7 @@ illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 for k in illstack_global_properties.keys():
     element = illstack_global_properties[k][0]
-    if isinstance(element, np.int16) or isinstance(element, np.int32) or isinstance(element, np.int64) or isinstance(element, int):
+    if isinstance(element, np.uint32) or isinstance(element, np.int16) or isinstance(element, np.int32) or isinstance(element, np.int64) or isinstance(element, int):
         halos_columns[k] = "INTEGER"
     else:
         halos_columns[k] = "REAL"
