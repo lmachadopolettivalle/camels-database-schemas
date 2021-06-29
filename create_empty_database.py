@@ -1,4 +1,5 @@
 import argparse
+import numpy as np
 
 from database_helpers import set_database_filename, create_table, remove_existing_db_files
 from illstack_helpers import get_illstack_global_properties
@@ -17,7 +18,7 @@ set_database_filename(db_filename)
 # Remove database file if already exists
 remove_existing_db_files()
 
-# Step 1: create necessary tables
+# Create necessary tables
 ### simulations
 # Table schema motivated by https://camels.readthedocs.io/en/latest/IllustrisTNG_params.html#illustristng-params
 create_table(
@@ -34,37 +35,129 @@ create_table(
         "A_AGN2" : "REAL NOT NULL",
         "seed" : "REAL NOT NULL",
     },
+    unique=("simulation_suite", "simulation_name")
 )
 
 
 ### halos
 # based on list of properties from Illstack
 halos_columns = {
-    "halo_unique_id" : "TEXT NOT NULL",
+    "snapshot" : "INTEGER NOT NULL",
     "simulation_unique_id" : "TEXT NOT NULL",
-    "redshift" : "REAL NOT NULL",
 }
 
 illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 for k in illstack_global_properties.keys():
-    halos_columns[k] = "REAL"
+    element = illstack_global_properties[k][0]
+    if isinstance(element, np.uint32) or isinstance(element, np.int16) or isinstance(element, np.int32) or isinstance(element, np.int64) or isinstance(element, int):
+        halos_columns[k] = "INTEGER"
+    else:
+        halos_columns[k] = "REAL"
 
 create_table(
     "halos",
-    halos_columns
+    halos_columns,
+    unique=("snapshot", "simulation_unique_id", "ID")
 )
 
 ### profiles
 create_table(
     "profiles",
     {
-        "halo_unique_id" : "TEXT NOT NULL",
+        "ID" : "INTEGER NOT NULL",
         "simulation_unique_id" : "TEXT NOT NULL",
-        "redshift" : "REAL NOT NULL",
+        "snapshot" : "INTEGER NOT NULL",
         "radius" : "REAL NOT NULL",
         "property_key" : "TEXT NOT NULL",
-        "property_value" : "REAL"
+        "property_value" : "REAL",
     },
+    unique=("ID", "simulation_unique_id", "snapshot", "radius", "property_key")
 )
 
+### subhalos
+# Properties motivated by https://www.tng-project.org/data/docs/specifications/#sec2b
+create_table(
+    "subhalos",
+    {
+        "subhaloID" : "INTEGER NOT NULL",
+        "haloID" : "INTEGER NOT NULL",
+        "simulation_unique_id" : "TEXT NOT NULL",
+        "snapshot" : "INTEGER NOT NULL",
+        "SubhaloBHMass" : "REAL",
+        "SubhaloBHMdot" : "REAL",
+        "SubhaloBfldDisk" : "REAL",
+        "SubhaloBfldHalo" : "REAL",
+        "SubhaloCM" : "ARRAY",
+        "SubhaloGasMetalFractions" : "ARRAY",
+        "SubhaloGasMetalFractionsHalfRad" : "ARRAY",
+        "SubhaloGasMetalFractionsMaxRad" : "ARRAY",
+        "SubhaloGasMetalFractionsSfr" : "ARRAY",
+        "SubhaloGasMetalFractionsSfrWeighted" : "ARRAY",
+        "SubhaloGasMetallicity" : "REAL",
+        "SubhaloGasMetallicityHalfRad" : "REAL",
+        "SubhaloGasMetallicityMaxRad" : "REAL",
+        "SubhaloGasMetallicitySfr" : "REAL",
+        "SubhaloGasMetallicitySfrWeighted" : "REAL",
+        "SubhaloHalfmassRad" : "REAL",
+        "SubhaloHalfmassRadType" : "ARRAY",
+        "SubhaloIDMostbound" : "REAL",
+        "SubhaloLen" : "REAL",
+        "SubhaloLenType" : "ARRAY",
+        "SubhaloMass" : "REAL",
+        "SubhaloMassInHalfRad" : "REAL",
+        "SubhaloMassInHalfRadType" : "ARRAY",
+        "SubhaloMassInMaxRad" : "REAL",
+        "SubhaloMassInMaxRadType" : "ARRAY",
+        "SubhaloMassInRad" : "REAL",
+        "SubhaloMassInRadType" : "ARRAY",
+        "SubhaloMassType" : "ARRAY",
+        "SubhaloParent" : "REAL",
+        "SubhaloPos" : "ARRAY",
+        "SubhaloSFR" : "REAL",
+        "SubhaloSFRinHalfRad" : "REAL",
+        "SubhaloSFRinMaxRad" : "REAL",
+        "SubhaloSFRinRad" : "REAL",
+        "SubhaloSpin" : "ARRAY",
+        "SubhaloStarMetalFractions" : "ARRAY",
+        "SubhaloStarMetalFractionsHalfRad" : "ARRAY",
+        "SubhaloStarMetalFractionsMaxRad" : "ARRAY",
+        "SubhaloStarMetallicity" : "REAL",
+        "SubhaloStarMetallicityHalfRad" : "REAL",
+        "SubhaloStarMetallicityMaxRad" : "REAL",
+        "SubhaloStellarPhotometrics" : "ARRAY",
+        "SubhaloStellarPhotometricsMassInRad" : "REAL",
+        "SubhaloStellarPhotometricsRad" : "REAL",
+        "SubhaloVel" : "ARRAY",
+        "SubhaloVelDisp" : "REAL",
+        "SubhaloVmax" : "REAL",
+        "SubhaloVmaxRad" : "REAL",
+        "SubhaloWindMass" : "REAL",
+    },
+    unique=("subhaloID", "haloID", "simulation_unique_id", "snapshot")
+)
+
+### mergertree
+# Properties motivated by https://www.tng-project.org/data/docs/specifications/#sec4a
+create_table(
+    "mergertree",
+    {
+        "subhaloID" : "INTEGER NOT NULL", # In mergertree, subhaloID is a unique ID, and has NOTHING to do with subhaloID from the subhalos table. To match with the subhaloID from the subhalos table, look at the "subfindID" column within this table.
+        "subfindID" : "INTEGER NOT NULL", # This corresponds to "subhaloID" in the subhalos table. The combination (subfindID, snapshot) is a unique identifier of any subhalo within a simulation.
+        "snapshot" : "INTEGER NOT NULL",
+        "simulation_unique_id" : "TEXT NOT NULL",
+        "LastProgenitorID" : "INTEGER NOT NULL",
+        "MainLeafProgenitorID" : "INTEGER NOT NULL",
+        "RootDescendantID" : "INTEGER NOT NULL",
+        "TreeID" : "INTEGER NOT NULL",
+        "FirstProgenitorID" : "INTEGER NOT NULL",
+        "NextProgenitorID" : "INTEGER NOT NULL",
+        "DescendantID" : "INTEGER NOT NULL",
+        "FirstSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NextSubhaloInFOFGroupID" : "INTEGER NOT NULL",
+        "NumParticles" : "INTEGER NOT NULL",
+        "Mass" : "REAL NOT NULL",
+        "MassHistory" : "INTEGER NOT NULL",
+    },
+    unique=("subhaloID", "subfindID", "snapshot", "simulation_unique_id")
+)

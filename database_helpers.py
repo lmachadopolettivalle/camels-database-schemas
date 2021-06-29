@@ -35,6 +35,13 @@ def convert_array(text):
 sqlite3.register_adapter(np.ndarray, adapt_array)
 # Converts TEXT to np.array when selecting
 sqlite3.register_converter("ARRAY", convert_array)
+# Converts numpy integers into traditional int when inserting
+sqlite3.register_adapter(np.int16, lambda val: int(val))
+sqlite3.register_adapter(np.int32, lambda val: int(val))
+sqlite3.register_adapter(np.int64, lambda val: int(val))
+sqlite3.register_adapter(np.uint32, lambda val: int(val))
+# Converts np.float into traditional float when inserting
+sqlite3.register_adapter(np.float32, lambda val: float(val))
 
 
 ####################
@@ -76,11 +83,11 @@ def executemany_query(query: str, data: list):
     cursor.close()
     conn.close()
 
-def create_table(table_name: str, columns: dict, primary_key: tuple = None, foreign_key: dict = None):
+def create_table(table_name: str, columns: dict, primary_key: tuple = None, foreign_key: dict = None, unique: list = None):
     """ Create a table in the database
     table_name: Example = "halos"
     columns: Example = {
-        "halo_id" : "INTEGER PRIMARY KEY",
+        "haloID" : "INTEGER PRIMARY KEY",
         "halo_M500c" : "REAL"
     }
     """
@@ -90,6 +97,8 @@ def create_table(table_name: str, columns: dict, primary_key: tuple = None, fore
         columns_list.append(f"PRIMARY KEY ({', '.join(primary_key)})")
     if foreign_key is not None:
         columns_list.append(f"FOREIGN KEY ({foreign_key['local_column']}) REFERENCES {foreign_key['foreign_table']} ({foreign_key['foreign_column']})")
+    if unique is not None:
+        columns_list.append(f"UNIQUE ({', '.join(unique)}) ON CONFLICT FAIL")
 
     query = f"""
     CREATE TABLE IF NOT EXISTS {table_name}
@@ -106,7 +115,7 @@ def populate_table(table_name: str, columns: list, data: list):
     values_placeholders = ", ".join(["?" for _ in columns])
 
     query = f"""
-    INSERT INTO {table_name}
+    INSERT OR IGNORE INTO {table_name}
     ({columns_string})
     VALUES ({values_placeholders})
     """

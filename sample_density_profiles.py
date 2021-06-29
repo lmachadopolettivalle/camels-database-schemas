@@ -16,7 +16,7 @@ high_mass_cut /= HUBBLE
 
 query = f"""
 SELECT 
-halo_unique_id, M_Crit200
+ID, M_Crit200
 FROM halos
 WHERE
 M_Crit200 <= {high_mass_cut}
@@ -28,20 +28,20 @@ LIMIT 2000
 data = execute_query(query)
 #print(data)
 
-halo_ids = [row["halo_unique_id"] for row in data]
+halo_ids = [row["ID"] for row in data]
 
 
 property_key = "gas_density"
 
 query = f"""
 SELECT 
-halo_unique_id, radius, property_value
+ID, radius, property_value
 FROM profiles
 WHERE
 property_key = ?
 AND
-halo_unique_id IN ({','.join(['?' for _ in halo_ids])})
-ORDER BY halo_unique_id, radius
+ID IN ({','.join(['?' for _ in halo_ids])})
+ORDER BY ID, radius
 """
 
 params = (property_key, *halo_ids)
@@ -51,7 +51,7 @@ data = execute_query(query, params)
 
 profiles = defaultdict(dict)
 for row in data:
-    halo_id = row["halo_unique_id"]
+    halo_id = row["ID"]
     if "radius" not in profiles[halo_id]:
         profiles[halo_id]["radius"] = []
         profiles[halo_id]["property"] = []

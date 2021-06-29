@@ -28,7 +28,7 @@ for simulation_suite, filename in CAMELS_simulations_textfiles.items():
 
     for i, row in data.iterrows():
         CAMELS_entry = [
-            f"{simulation_suite}_{row['#Name']}", # simulation_unique_id
+            f"{simulation_suite}_{row['#Name']}", # simulation_unique_id, e.g. IllustrisTNG_1P_22
             simulation_suite,
             row["#Name"], # simulation_name
             row["Omega_m"],

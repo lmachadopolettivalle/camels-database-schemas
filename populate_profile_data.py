@@ -6,21 +6,20 @@ from illstack_helpers import get_illstack_global_properties, get_illstack_profil
 # Accept optional name of database file
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", "--database_filename", help="Database filename to be generated", default="sample.db", type=str)
-parser.add_argument("--profile_filename", help="Profiles .npz file. Name: 'simulationsuite_simulationname_redshift_...', e.g. 'IllustrisTNG_1P_22_0.0_...'", required=True, type=str)
+parser.add_argument("--profile_filename", help="Profiles .npz file. Name: 'simulationsuite_simulationname_snapshot.npz', e.g. 'IllustrisTNG_1P_22_033.npz'", required=True, type=str)
 
 args = parser.parse_args()
 db_filename = args.database_filename
 profile_filename = args.profile_filename
 
 # Determine simulation details from the filename
-# Filenames: "simulationsuite_simulationname_redshift_...", e.g. "IllustrisTNG_1P_22_0.0_..."
+# Filenames: "simulationsuite_simulationname_snapshot.npz", e.g. "IllustrisTNG_1P_22_033.npz"
 # Important! This assumes that all simulation names contain an underscore. E.g. "1P_22"
 simulation_details = profile_filename.split("_")
 
 SIMULATION_SUITE = simulation_details[0]
 SIMULATION_NAME = f"{simulation_details[1]}_{simulation_details[2]}" # Assumes all simulation names have an underscore in them
-SIMULATION_REDSHIFT = float(simulation_details[3].replace(".npz", ""))
-#print(SIMULATION_REDSHIFT)
+SIMULATION_SNAPSHOT = int(simulation_details[3].replace(".npz", ""))
 SIMULATION_UNIQUE_ID = f"{SIMULATION_SUITE}_{SIMULATION_NAME}"
 
 # Set database filename
@@ -32,27 +31,23 @@ illstack_global_properties = get_illstack_global_properties(profile_filename)
 
 # Populate tables with computed data
 ### halos
-halo_unique_ids = [] # list of strings
+halo_ids = illstack_global_properties["ID"] # list of halo IDs
 halos_data = [] # List of tuples with halo properties
 number_halos = len(illstack_global_properties[
     list(illstack_global_properties.keys())[0]
 ])
 
 # Setup list of columns
-halos_columns_list = ["halo_unique_id", "simulation_unique_id", "redshift"]
+halos_columns_list = ["simulation_unique_id", "snapshot"]
 halos_columns_list.extend(list(illstack_global_properties.keys()))
-#print(halos_columns_list)
 
 # Setup list of rows to be inserted
 for i in range(number_halos):
     halos_entry = []
-    halo_id = f"halo_{i}"
-    halo_unique_ids.append(halo_id)
-    halos_entry.append(halo_id) # halo_unique_id
     halos_entry.append(SIMULATION_UNIQUE_ID) # simulation_unique_id
-    halos_entry.append(SIMULATION_REDSHIFT) # redshift
+    halos_entry.append(SIMULATION_SNAPSHOT) # snapshot number
 
-    for v in illstack_global_properties.values():
+    for k, v in illstack_global_properties.items():
         halos_entry.append(v[i])
 
     halos_data.append(tuple(halos_entry))
@@ -62,7 +57,6 @@ populate_table(
     halos_columns_list,
     halos_data
 )
-
 
 ### profiles
 profiles_data = [] # List of tuples with profile properties
@@ -74,9 +68,9 @@ for i in range(number_halos):
     for j, radius in enumerate(radial_bins):
         for k, v in illstack_profile_properties.items():
             profiles_entry = []
-            profiles_entry.append(halo_unique_ids[i]) # halo_unique_id
+            profiles_entry.append(halo_ids[i]) # ID
             profiles_entry.append(SIMULATION_UNIQUE_ID) # simulation_unique_id
-            profiles_entry.append(SIMULATION_REDSHIFT) # redshift
+            profiles_entry.append(SIMULATION_SNAPSHOT) # snapshot number
             profiles_entry.append(radius) # radius
 
             profiles_entry.append(k) # property_key
@@ -87,7 +81,7 @@ for i in range(number_halos):
 populate_table(
     "profiles",
     [
-        "halo_unique_id", "simulation_unique_id", "redshift", "radius", "property_key", "property_value"
+        "ID", "simulation_unique_id", "snapshot", "radius", "property_key", "property_value"
     ],
     profiles_data
 )
